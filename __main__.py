@@ -15,7 +15,7 @@ bot = commands.Bot(command_prefix=PREFIX) # ASSIGNS CLIENT AS BOT AND SETS COMMA
 
 
 bot.load_extension("plugins.serverstatus")
-
+bot.load_extension("plugins.modcmds")
 
 # ### ON READY FUNCTION ###
 
@@ -42,7 +42,7 @@ class ExtensionManager(commands.Cog):  # DEFINING THIS CLASS AND MAKING IT A COG
             except discord.ext.commands.ExtensionNotLoaded:
                 await ctx.send("Unable to reload extension Boss, check extension name")
         else:
-            await ctx.send(f"{ctx.author} you do not have permission to perform this action")
+            await ctx.send(f"{ctx.author.mention} you do not have permission to perform this action")
 
     @reload.error  # ERROR HANDLER FOR RELOAD COMMAND MISSING ARGUEMENTS
     async def reload_error(self, ctx, error):
@@ -58,7 +58,7 @@ class ExtensionManager(commands.Cog):  # DEFINING THIS CLASS AND MAKING IT A COG
             except discord.ext.commands.ExtensionNotLoaded:
                 await ctx.send("Unable to unload extension Boss, check extension name")
         else:
-            await ctx.send(f"{ctx.author} you do not have permission to perform this action")
+            await ctx.send(f"{ctx.author.mention} you do not have permission to perform this action")
 
     @unload.error  # ERROR HANDLER FOR UNLOAD COMMAND MISSING ARGUEMENTS
     async def unload_error(self, ctx, error):
@@ -74,12 +74,13 @@ class ExtensionManager(commands.Cog):  # DEFINING THIS CLASS AND MAKING IT A COG
             except discord.ext.commands.ExtensionNotLoaded:
                 await ctx.send("Unable to load extension Boss, check extension name")
         else:
-            await ctx.send(f"{ctx.author} you do not have permission to perform this action")
+            await ctx.send(f"{ctx.author.mention} you do not have permission to perform this action")
 
     @load.error  # ERROR HANDLER FOR LOAD COMMAND MISSING ARGUEMENTS
     async def load_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("Please provide extension name to load Boss")
+
 
 
 # ### RUNNING THE BOT, NEEDS TO STAY AS LAST LINE OF CODE! ###
