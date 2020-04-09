@@ -4,7 +4,15 @@ import requests
 import json
 
 
-# ### CLASSES ###
+# ### CLASSES & FUNCTIONS ###
+
+
+def change_status(newstat):
+    with open('data/status.json', "r") as f:
+        data = json.load(f)
+    data["ext2"]["Status"] = newstat
+    with open('data/status.json', "w") as f:
+        json.dump(data, f)
 
 
 class Server:  # set server class
@@ -25,12 +33,16 @@ class Server:  # set server class
             return None
 
 
-# ### COGS AND COMMANDS ###
+# ### COGS ###
 
 
 class ServerStatus(commands.Cog, name="Server Status Plugin"):  # DEFINING THIS CLASS AND MAKING IT A COG
 
+    # ### CLASS VARS ###
+
     server = Server(0)
+
+    # ### COMMANDS ###
 
     @commands.command(brief="Used to set a game server id",
                       usage="<Battlemetrics Server ID>",
@@ -52,11 +64,6 @@ class ServerStatus(commands.Cog, name="Server Status Plugin"):  # DEFINING THIS 
                     "Add server failed. Please give a valid Battlemetrics Game Server ID")
             # ERROR MESSAGE IF GIVEN AN INVALID ID
 
-    @addserver.error
-    async def addserver_error(self, ctx, error):  # ERROR HANDLER FOR ADDSERVER COMMAND MISSING ARGUEMENTS
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.channel.send("Add server failed. Please give a valid Battlemetrics Game Server ID")
-
     @commands.command(brief="",
                       enabled=True,
                       description="",
@@ -75,13 +82,23 @@ class ServerStatus(commands.Cog, name="Server Status Plugin"):  # DEFINING THIS 
         except TypeError:
             await ctx.channel.send("No Valid Server ID found")
 
+    # ### ERROR HANDLERS ###
+
+    @addserver.error
+    async def addserver_error(self, ctx, error):  # ERROR HANDLER FOR ADDSERVER COMMAND MISSING ARGUEMENTS
+        if isinstance(error, commands.MissingRequiredArgument):
+            await ctx.channel.send("Add server failed. Please give a valid Battlemetrics Game Server ID")
+
 
 # ### SETUP AND TEARDOWN FUNCTIONS ###
 
+
 def setup(bot):  # SETUP FUNCTION TO INITIALISE THE EXTENTION
     bot.add_cog(ServerStatus(bot))  # TELLS THE BOT TO ADD THE COG
+    change_status("loaded")
     print("Server Status Plugin loaded successfully!")  # TELLS ME IT'S LOADED OK
 
 
 def teardown(bot):  # TEARDOWN FUNCTION FIRES ON EXTENSION UNLOAD
+    change_status("unloaded")
     print('Server Status Plugin unloaded!')

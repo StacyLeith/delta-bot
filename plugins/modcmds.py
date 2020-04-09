@@ -1,12 +1,24 @@
 import discord
 from discord.ext import commands
 import typing
+import json
 
 
-# ### COGS AND COMMANDS ###
+# ### CLASSES & FUNCTIONS ###
 
 
-class ModCommands(commands.Cog):  # MOD COMMANDS COG
+def change_status(newstat):
+    with open('data/status.json', "r") as f:
+        data = json.load(f)
+    data["ext1"]["Status"] = newstat
+    with open('data/status.json', "w") as f:
+        json.dump(data, f)
+
+
+# ### COGS ###
+
+
+class ModCommands(commands.Cog, name="Moderator Commands Plugin"):  # MOD COMMANDS COG
 
     # ### COMMANDS ###
 
@@ -79,8 +91,7 @@ class ModCommands(commands.Cog):  # MOD COMMANDS COG
         await discord.TextChannel.delete_messages(chan, messages=msglist)  # DELETES ALL MESSAGES FOUND
         await ctx.send(f"{ctx.author.mention} deleted the last {len(msglist)} messages by {victim.mention}")
 
-
-# ### ERROR HANDLERS ###
+    # ### ERROR HANDLERS ###
 
     @purge.error
     async def purge_error(self, ctx, error):  # ERROR HANDLER FOR CLEAR NO PERMISSIONS
@@ -110,8 +121,10 @@ class ModCommands(commands.Cog):  # MOD COMMANDS COG
 
 def setup(bot):
     bot.add_cog(ModCommands(bot))
+    change_status("loaded")
     print("Mod Commands Plugin extension loaded")
 
 
 def teardown(bot):
+    change_status("unloaded")
     print('Mod Commands Plugin extension unloaded!')
