@@ -1,1 +1,1 @@
-{"ext1": {"Name": "Moderator Commands Plugin", "Path": "plugins.modcmds", "Status": "loaded"}, "ext2": {"Name": "Server Status Plugin", "Path": "plugins.serverstatus", "Status": "loaded"}}
+{"ext1": {"Name": "Moderator Commands Plugin", "Path": "plugins.modcmds", "Status": "loaded"}, "ext2": {"Name": "Server Status Plugin", "Path": "plugins.serverstatus", "Status": "loaded"}, "ext3": {"Name": "Steam Scrape Plugin", "Path": "plugins.steamtopscrape", "Status": "loaded"}}

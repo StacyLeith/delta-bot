@@ -96,9 +96,9 @@ class ServerStatus(commands.Cog, name="Server Status Plugin"):  # DEFINING THIS 
 def setup(bot):  # SETUP FUNCTION TO INITIALISE THE EXTENTION
     bot.add_cog(ServerStatus(bot))  # TELLS THE BOT TO ADD THE COG
     change_status("loaded")
-    print("Server Status Plugin loaded successfully!")  # TELLS ME IT'S LOADED OK
+    print("Server Status Plugin loaded")  # TELLS ME IT'S LOADED OK
 
 
 def teardown(bot):  # TEARDOWN FUNCTION FIRES ON EXTENSION UNLOAD
     change_status("unloaded")
-    print('Server Status Plugin unloaded!')
+    print('Server Status Plugin unloaded')

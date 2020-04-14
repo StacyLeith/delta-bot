@@ -18,6 +18,7 @@ owner_id = int(108205719324483584)
 
 bot.load_extension("plugins.serverstatus")
 bot.load_extension("plugins.modcmds")
+bot.load_extension("plugins.steamtopscrape")
 
 
 # ### ON READY FUNCTION ###

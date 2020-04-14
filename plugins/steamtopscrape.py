@@ -1,31 +1,37 @@
 from urllib.request import urlopen as uReq
 from bs4 import BeautifulSoup as soup
+from discord.ext import commands  # IMPORTS COMMANDS MODULE
+import json
+import typing
+import discord
 
-# vars ready to call
-topgames = {}
-amount = 20  # arguement for amount of results to return
-game_count = 0
 
-# url to open
-url = "https://store.steampowered.com/search/?filter=topsellers&os=win"
+def change_status(newstat):
+    with open('data/status.json', "r") as f:
+        data = json.load(f)
+    data["ext3"]["Status"] = newstat
+    with open('data/status.json', "w") as f:
+        json.dump(data, f)
 
-# open page and grabe raw html with urlopen
-uClient = uReq(url)
-raw_html = uClient.read()
-uClient.close()
 
-# parsing html
-pagesoup = soup(raw_html, "html.parser")
-
-# finding the main div class data is in
-i = pagesoup.find("div", {"id": "search_resultsRows"})
-
-# finding all the a tags and putting them in a list
-containers = i.findAll("a")
-
-# start looping though the a tags
-for container in containers:
-    if game_count < amount:
+def scrapesteam():  # function to scrape steams top sellers by amount given
+    # url to open
+    url = "https://store.steampowered.com/search/?filter=topsellers&os=win"
+    # open page and grabe raw html with urlopen
+    uclient = uReq(url)
+    raw_html = uclient.read()
+    uclient.close()
+    # parsing html
+    pagesoup = soup(raw_html, "html.parser")
+    # finding the main div class data is in
+    i = pagesoup.find("div", {"id": "search_resultsRows"})
+    # finding all the a tags and putting them in a list
+    containers = i.findAll("a")
+    # vars ready to call
+    topgames = {}
+    game_count = 0
+    # start looping though the a tags
+    for container in containers:
         name = ""  # variables set to call
         price = ""
         release = ""
@@ -63,10 +69,37 @@ for container in containers:
                            "link": link}}
         topgames.update(gameinfo)  # updates the main dictionary with the values for the game
         game_count += 1  # adds 1 to game count to control results with an arguement
+    return topgames
 
 
-for x in topgames:  # cycles through the names of the games in the dict
-    if topgames[x]["sale"] == "":  # formates if it is not on sale
-        print(f"{x}, {topgames[x]['releasedate']}, {topgames[x]['price']}, {topgames[x]['link']}")
-    else:  # formats it if it is on sale
-        print(f"{x}, {topgames[x]['releasedate']}, {topgames[x]['price']}, {topgames[x]['sale']}, {topgames[x]['saleprice']}, {topgames[x]['link']}")
+class SteamScrape(commands.Cog):  # DEFINING THIS CLASS AND MAKING IT A COG
+    @commands.command()
+    async def steamtop(self, ctx, arg: typing.Optional[int]):
+        topgames = scrapesteam()
+        steamscrape = discord.Embed(title="Top 10 Games on Steam", value="Use !steamtop <number> for details & link")
+        if arg == int:
+            pass
+        else:
+            for c, x in enumerate(topgames, 1):  # cycles through the names of the games in the dict
+                if topgames[x]["sale"] == "":  # formates if it is not on sale
+                    steamscrape.add_field(name=f"#{c}", value=f"{x}: {topgames[x]['price']}")
+                    c += 1
+                    if c == 11:
+                        break
+                else:  # formats it if it is on sale
+                    steamscrape.add_field(name=f"#{c}", value=f"{x}:{topgames[x]['sale']} = £{topgames[x]['saleprice']}")
+                    c += 1
+                    if c == 11:
+                        break
+            await ctx.channel.send(content=None, embed=steamscrape)
+
+
+def setup(bot):  # SETUP FUNCTION TO INITIALISE THE EXTENTION
+    bot.add_cog(SteamScrape(bot))  # TELLS THE BOT TO ADD THE COG
+    change_status("loaded")
+    print("Steam Scrape Plugin loaded")  # TELLS ME IT'S LOADED OK
+
+
+def teardown(bot):  # TEARDOWN FUNCTION FIRES ON EXTENSION UNLOAD
+    change_status("unloaded")
+    print('Steam Scrape Plugin extension unloaded!')

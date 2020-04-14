@@ -127,4 +127,4 @@ def setup(bot):
 
 def teardown(bot):
     change_status("unloaded")
-    print('Mod Commands Plugin extension unloaded!')
+    print('Mod Commands Plugin extension unloaded')
