@@ -55,7 +55,7 @@ def scrapesteam():  # function to scrape steams top sellers by amount given
                 pass  # ignores all the other stuff
         count = 0  # count var for finding how many £ are in price
         for x in price:
-            if x == "£":  # counts the amount of £ in price
+            if x == "$":  # counts the amount of £ in price
                 count += 1
         if count == 1:  # sets the normal price if only 1 £
             cprice = price
@@ -64,7 +64,7 @@ def scrapesteam():  # function to scrape steams top sellers by amount given
             cprice = ""
             sprice = ""
         else:  # splits the price into a list at the £, and assisgns current and sale price
-            price_list = price.split("£")
+            price_list = price.split("$")
             cprice = price_list[1]
             sprice = price_list[2]
         # sets a dictionary with the games info
@@ -90,7 +90,7 @@ class SteamScrape(commands.Cog):  # DEFINING THIS CLASS AND MAKING IT A COG
                     if c == 11:
                         break
                 else:  # formats it if it is on sale
-                    steamscrape.add_field(name=f"#{c}", value=f"{x}:{topgames[x]['sale']} = £{topgames[x]['saleprice']}")
+                    steamscrape.add_field(name=f"#{c}", value=f"{x}:{topgames[x]['sale']} = ${topgames[x]['saleprice']}")
                     c += 1
                     if c == 11:
                         break
