@@ -60,6 +60,9 @@ def scrapesteam():  # function to scrape steams top sellers by amount given
         if count == 1:  # sets the normal price if only 1 £
             cprice = price
             sprice = ""
+        elif count == 0:
+            cprice = ""
+            sprice = ""
         else:  # splits the price into a list at the £, and assisgns current and sale price
             price_list = price.split("£")
             cprice = price_list[1]
